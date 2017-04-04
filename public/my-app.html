@@ -1,0 +1,38 @@
+<link rel="import" href="bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="my-login.html">
+<link rel="import" href="my-characters.html">
+
+<dom-module id="my-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+        font-family: Roboto, sans-serif;
+        max-width: 640px;
+        margin: 0 auto;
+      }
+    </style>
+
+    <firebase-app
+      id="firebase"
+      auth-domain="fir-app-2d6e1.firebaseapp.com"
+      database-url="https://fir-app-2d6e1.firebaseio.com/"
+      api-key="AIzaSyBAEpUJMTiQ9fRNKI5XGCNPZgib-sO4mQU">
+    </firebase-app>
+
+    <header>
+      <my-login></my-login>
+    </header>
+
+    <main>
+      <my-characters></my-characters>
+    </main>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-app'
+    });
+  </script>
+</dom-module>

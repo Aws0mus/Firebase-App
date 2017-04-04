@@ -1,0 +1,168 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-menu/paper-menu.html">
+
+
+
+<dom-module id="my-characters">
+  <template>
+
+    <style>
+     :host {
+       display: block;
+       padding: 10px;
+     }
+     #create {
+       width: 100%;
+     }
+     #characters-list {
+       list-style: none;
+       padding: 0;
+       margin: 0;
+     }
+     #characters-list li {
+       @apply(--layout-horizontal);
+       @apply(--layout-center);
+     }
+     #characters-list .content {
+       @apply(--layout-flex);
+       padding: 8px;
+     }
+     #characters-controls {
+       @apply(--layout-horizontal);
+       @apply(--layout-center-justified);
+     }
+    </style>
+
+
+    <div class="card">
+      <firebase-auth user="{{user}}"></firebase-auth>
+      <firebase-query
+        id="query"
+        path="/users/[[user.uid]]/characters"
+        data="{{characters}}">
+      </firebase-query>
+
+      <div id="characters" hidden$="[[!user]]">
+        <ul id="characters-list">
+          <template is="dom-repeat" items="[[characters]]" as="character">
+            <li>
+              <p class="content">Nombre: [[character.name]] Clase: [[character.class]]</p>
+              <p class="content">Fuerza: [[character.atributos.Fuerza]]
+                Velocidad: [[character.atributos.Velocidad]]
+                Inteligencia: [[character.atributos.Inteligencia]]
+                Defensa:  [[character.atributos.Defensa]]
+                Suerte: [[character.atributos.Suerte]]
+                </p>
+              <paper-icon-button icon="clear" character="[[character]]" on-tap="remove"></paper-icon-button>
+            </li>
+          </template>
+        </ul>
+
+        <paper-input id="name_input" label="Character name"> </paper-input>
+
+        <paper-dropdown-menu label="Selecciona una clase"  on-iron-select="_onClassSelected">
+          <paper-menu class="dropdown-content" selected="{{selectedClassIndex}}">
+            <template is="dom-repeat" items="[[classes]]" as="class">
+              <paper-item>
+                <p>[[class.name]]</p>
+              </paper-item>
+            </template>
+          </paper-menu>
+        </paper-dropdown-menu>
+
+        <div id="characters-controls">
+          <paper-button id="add" on-tap="add">Add</paper-button>
+        </div>
+
+
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-characters',
+      properties: {
+        character: {
+          type: Object
+        },
+        selectedClassIndex: {
+          type: Number,
+          value: 1
+        },
+        selectedClass:{
+          type:Object,
+          value:null
+        },
+        classes: {
+          type: Array,
+          value: function() {
+            return [{
+              id: 1,
+              name: 'Caballero',
+                atributos: {
+                Fuerza: 10,
+                Velocidad: 5,
+                Inteligencia: 2,
+                Defensa: 8,
+                Suerte: 4
+              }
+            }, {
+              id: 2,
+              name: 'Mago',
+              atributos: {
+                Fuerza: 3,
+                Velocidad: 7,
+                Inteligencia: 9,
+                Defensa: 5,
+                Suerte: 5
+              }
+            }, {
+              id: 3,
+              name: 'Pícaro',
+              atributos: {
+                Fuerza: 4,
+                Velocidad: 8,
+                Inteligencia: 5,
+                Defensa: 5,
+                Suerte: 7
+              }
+            }];
+          }
+        }
+      },
+      add: function() {
+        this.$.query.ref.push({
+          name: this.$.name_input.value,
+          class: this.selectedClass.name,
+          atributos: {
+            Fuerza: this.selectedClass.atributos.Fuerza,
+            Velocidad: this.selectedClass.atributos.Velocidad,
+            Inteligencia: this.selectedClass.atributos.Inteligencia,
+            Defensa: this.selectedClass.atributos.Defensa,
+            Suerte: this.selectedClass.atributos.Suerte
+          }
+        });
+        this.$.name_input.value = null;
+
+      },
+      remove: function(e) {
+        var key = e.currentTarget.character.$key;
+        this.$.query.ref.child(key).remove();
+      },
+      _onClassSelected: function(e) {
+        // updating the selected sport by notifying its path
+        this.set('selectedClass',this.classes[this.selectedClassIndex]);
+      }
+    });
+
+  </script>
+</dom-module>
