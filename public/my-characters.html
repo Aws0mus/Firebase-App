@@ -7,8 +7,7 @@
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="bower_components/paper-menu/paper-menu.html">
-
-
+<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
 
 <dom-module id="my-characters">
   <template>
@@ -62,6 +61,12 @@
                 Defensa:  [[character.atributos.Defensa]]
                 Suerte: [[character.atributos.Suerte]]
               </p>
+              <p class="content">
+                Habilidades:
+                <template is="dom-repeat" items="[[character.abilities]]" as="ability">
+                  [[ability]]
+                </template>
+              </p>
               <paper-icon-button icon="clear" character="[[character]]" on-tap="remove"></paper-icon-button>
             </li>
           </template>
@@ -80,6 +85,30 @@
           </paper-menu>
         </paper-dropdown-menu>
 
+        <p>
+          <div id="abilities">
+              <paper-checkbox>Visión nocturna</paper-checkbox>
+              <paper-checkbox>Canibalismo</paper-checkbox>
+              <paper-checkbox>Cabeza dura</paper-checkbox>
+              <paper-checkbox>Cerebrito</paper-checkbox>
+              <paper-checkbox>Manos rápidas</paper-checkbox>
+              <paper-checkbox>Radiactivo</paper-checkbox>
+              <paper-checkbox>Solitario</paper-checkbox>
+              <paper-checkbox>Lector</paper-checkbox>
+              <paper-checkbox>Pescador</paper-checkbox>
+              <paper-checkbox>Estómago de acero</paper-checkbox>
+              <paper-checkbox>Experto de las armas</paper-checkbox>
+              <paper-checkbox>Sanguinario</paper-checkbox>
+              <paper-checkbox>Sigiloso</paper-checkbox>
+              <paper-checkbox>Carismático</paper-checkbox>
+              <paper-checkbox>Ignífugo</paper-checkbox>
+              <paper-checkbox>Resistente</paper-checkbox>
+              <paper-checkbox>Experto en cerraduras</paper-checkbox>
+              <paper-checkbox>Mula de carga</paper-checkbox>
+              <paper-checkbox>Inmune a las drogas</paper-checkbox>
+              <paper-checkbox>Regateador</paper-checkbox>
+          </div>
+        </p>
         <div id="characters-controls">
           <paper-button id="add" on-tap="add">Añadir</paper-button>
         </div>
@@ -146,6 +175,11 @@
         }
       },
       add: function() {
+        var list = []
+        var a = this.querySelectorAll('paper-checkbox[checked]').forEach(function(e){
+          list.push(e.innerText);
+          e.checked = false;
+        });
         this.$.query.ref.push({
           name: this.$.name_input.value,
           class: this.selectedClass.name,
@@ -156,7 +190,8 @@
             Defensa: this.selectedClass.atributos.Defensa,
             Suerte: this.selectedClass.atributos.Suerte
           },
-          image: this.$.image_input.value
+          image: this.$.image_input.value,
+          abilities: list
         });
         this.$.name_input.value = null;
         this.$.image_input.value = null;
