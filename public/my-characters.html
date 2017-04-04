@@ -53,19 +53,22 @@
         <ul id="characters-list">
           <template is="dom-repeat" items="[[characters]]" as="character">
             <li>
-              <p class="content">Nombre: [[character.name]] Clase: [[character.class]]</p>
+              <img src=[[character.image]] style="width:90px;height:90px;">
+              <p class="content">Nombre: [[character.name]]</p>
+              <p class="content">Clase: [[character.class]]</p>
               <p class="content">Fuerza: [[character.atributos.Fuerza]]
                 Velocidad: [[character.atributos.Velocidad]]
                 Inteligencia: [[character.atributos.Inteligencia]]
                 Defensa:  [[character.atributos.Defensa]]
                 Suerte: [[character.atributos.Suerte]]
-                </p>
+              </p>
               <paper-icon-button icon="clear" character="[[character]]" on-tap="remove"></paper-icon-button>
             </li>
           </template>
         </ul>
 
-        <paper-input id="name_input" label="Character name"> </paper-input>
+        <paper-input id="name_input" label="Nombre del personaje"> </paper-input>
+        <paper-input id="image_input" label="Imagen"> </paper-input>
 
         <paper-dropdown-menu label="Selecciona una clase"  on-iron-select="_onClassSelected">
           <paper-menu class="dropdown-content" selected="{{selectedClassIndex}}">
@@ -78,7 +81,7 @@
         </paper-dropdown-menu>
 
         <div id="characters-controls">
-          <paper-button id="add" on-tap="add">Add</paper-button>
+          <paper-button id="add" on-tap="add">Añadir</paper-button>
         </div>
 
 
@@ -137,6 +140,9 @@
               }
             }];
           }
+        },
+        image: {
+          type: Object
         }
       },
       add: function() {
@@ -149,10 +155,11 @@
             Inteligencia: this.selectedClass.atributos.Inteligencia,
             Defensa: this.selectedClass.atributos.Defensa,
             Suerte: this.selectedClass.atributos.Suerte
-          }
+          },
+          image: this.$.image_input.value
         });
         this.$.name_input.value = null;
-
+        this.$.image_input.value = null;
       },
       remove: function(e) {
         var key = e.currentTarget.character.$key;
